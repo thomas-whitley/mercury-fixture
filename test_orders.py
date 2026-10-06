@@ -20,3 +20,8 @@ class Orders(unittest.TestCase):
 
     def test_summary_ends_with_the_total(self):
         self.assertEqual(summary(parse_orders(CSV)).splitlines()[-1], "TOTAL 22.50")
+
+    def test_summary_applies_bulk_discount(self):
+        bulk_csv = "sku,quantity,unit_price\nA,10,10.00\n"
+        expected = "A x10 95.00\nTOTAL 95.00"
+        self.assertEqual(summary(parse_orders(bulk_csv)), expected)

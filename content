@@ -1,0 +1,2 @@
+def order_total(lines: list[Line]) -> Decimal:
+    return sum((line_total(line) * (1 + GST)).quantize(CENT, rounding=ROUND_HALF_UP) for line in lines), Decimal(0)

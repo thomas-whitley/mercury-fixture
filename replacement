@@ -1,0 +1,12 @@
+def parse_orders(text: str) -> list[Line]:
+    lines, bad = [], []
+    for number, row in enumerate(csv.DictReader(io.StringIO(text)), start=2):
+        try:
+            lines.append(
+                Line(row[\"sku\"][\"strip\"](), int(row[\"quantity\"][\"strip\"]()), Decimal(row[\"unit_price\"][\"strip\"]()))
+            )
+        except (ValueError, InvalidOperation, TypeError, AttributeError):
+            bad.append(number)
+    if bad:
+        raise InvalidOrders(bad)
+    return lines

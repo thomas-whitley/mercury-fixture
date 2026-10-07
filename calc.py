@@ -1,5 +1,7 @@
-"""A deliberately small module for Mercury's repo chore integration test to edit."""
+def clamp(value, low, high):
+    if low > high:
+        raise ValueError('low cannot be greater than high')
+    return max(min(value, high), low)
 
-
-def add(a: int, b: int) -> int:
+def add(a, b):
     return a + b

@@ -1,0 +1,24 @@
+# A deliberately small module for Mercury's repo chore integration test to edit.
+
+from argparse import ArgumentParser
+import sys
+
+
+def add(a: int, b: int) -> int:
+    return a + b
+
+
+if __name__ == "__main__":
+    parser = ArgumentParser()
+    parser.add_argument('command', type=str)
+    parser.add_argument('A', type=int)
+    parser.add_argument('B', type=int)
+    args = parser.parse_args()
+
+    if args.command == 'add':
+        result = add(args.A, args.B)
+        print(result)
+        sys.exit(0)
+    else:
+        sys.stderr.write('Invalid command or arguments\n')
+        sys.exit(2)

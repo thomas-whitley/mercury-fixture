@@ -20,3 +20,9 @@ class Orders(unittest.TestCase):
 
     def test_summary_ends_with_the_total(self):
         self.assertEqual(summary(parse_orders(CSV)).splitlines()[-1], "TOTAL 22.50")
+
+    def test_reports_bad_quantity_by_line_number(self):
+        # Quantity of 0 and -1 should be reported as invalid lines
+        with self.assertRaises(InvalidOrders) as caught:
+            parse_orders("sku,quantity,unit_price\nA,0,1.00\nB,-1,2.00\nC,2,3.00\n")
+        self.assertEqual(caught.exception.line_numbers, [2, 3])

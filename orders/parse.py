@@ -1,4 +1,4 @@
-"""Parses an order CSV with the header sku,quantity,unit_price and no blank lines."""
+'''Parses an order CSV with the header sku,quantity,unit_price and no blank lines.'''
 
 import csv
 import io
@@ -22,12 +22,27 @@ class InvalidOrders(ValueError):
 
 
 def parse_orders(text: str) -> list[Line]:
-    lines, bad = [], []
+    """Parse CSV order text into a list of :class:`Line` objects.
+
+    A line is considered invalid if:
+    - ``quantity`` cannot be converted to an ``int``;
+    - ``quantity`` is less than 1;
+    - ``unit_price`` cannot be converted to a ``Decimal``;
+    - any required field is missing or malformed.
+    Invalid lines are collected and reported via :class:`InvalidOrders` with their
+    line numbers (header is line 1).
+    """
+    lines: list[Line] = []
+    bad: list[int] = []
     for number, row in enumerate(csv.DictReader(io.StringIO(text)), start=2):
         try:
-            lines.append(
-                Line(row["sku"].strip(), int(row["quantity"]), Decimal(row["unit_price"]))
-            )
+            sku = row["sku"].strip()
+            quantity = int(row["quantity"])
+            # Treat quantities below 1 as invalid
+            if quantity < 1:
+                raise ValueError("quantity must be >= 1")
+            unit_price = Decimal(row["unit_price"])
+            lines.append(Line(sku, quantity, unit_price))
         except (ValueError, InvalidOperation, TypeError, AttributeError):
             bad.append(number)
     if bad:

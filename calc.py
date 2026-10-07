@@ -1,5 +1,18 @@
-"""A deliberately small module for Mercury's repo chore integration test to edit."""
+def add(a, b):
+    """Return the sum of *a* and *b*.
 
-
-def add(a: int, b: int) -> int:
+    This function is part of the original repository and is used by the
+    existing tests.
+    """
     return a + b
+
+
+def divide(a, b):
+    """Return *a* divided by *b* as a float.
+
+    Raises:
+        ValueError: If ``b`` is zero.
+    """
+    if b == 0:
+        raise ValueError("cannot divide by zero")
+    return a / b

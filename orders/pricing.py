@@ -1,4 +1,10 @@
-"""Prices lines. Ten or more of one SKU takes 5 percent off. GST is 10 percent."""
+'''Pricing utilities for order calculations.
+
+This module provides functions to calculate line totals and overall order totals,
+including GST (Goods and Services Tax). The GST is applied at a rate of 10%.
+The `order_total` function now rounds each line's total *including* GST to the
+nearest cent using half‑up rounding, and then sums those rounded values.
+'''  
 
 from decimal import ROUND_HALF_UP, Decimal
 
@@ -19,6 +25,14 @@ def line_total(line: Line) -> Decimal:
 
 
 def order_total(lines: list[Line]) -> Decimal:
-    """The order's total including GST, rounded to the cent once, on the whole order."""
-    before_gst = sum((line_total(line) for line in lines), Decimal(0))
-    return (before_gst * (1 + GST)).quantize(CENT, rounding=ROUND_HALF_UP)
+    """The order's total including GST.
+
+    Each line's subtotal (including GST) is rounded to the nearest cent using
+    half‑up rounding, and the order total is the sum of those rounded line
+    amounts.
+    """
+    total = sum(
+        (line_total(line) * (1 + GST)).quantize(CENT, rounding=ROUND_HALF_UP)
+        for line in lines
+    )
+    return total

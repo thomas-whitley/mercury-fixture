@@ -20,3 +20,12 @@ class Orders(unittest.TestCase):
 
     def test_summary_ends_with_the_total(self):
         self.assertEqual(summary(parse_orders(CSV)).splitlines()[-1], "TOTAL 22.50")
+
+    def test_order_total_rounds_per_line(self):
+        csv = "sku,quantity,unit_price\nX,1,0.333\nY,1,0.666\n"
+        self.assertEqual(order_total(parse_orders(csv)), Decimal("1.10"))
+
+    def test_bulk_discount_and_rounding(self):
+        # 10 units at $1.00 each, 5% bulk discount, then GST, rounded per line.
+        csv = "sku,quantity,unit_price\nA,10,1.00\n"
+        self.assertEqual(order_total(parse_orders(csv)), Decimal("10.45"))

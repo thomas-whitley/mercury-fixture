@@ -1,0 +1,7 @@
+def add(a, b) -> float:
+    return a + b
+
+def clamp(value, low, high) -> float:
+    if low > high:
+        raise ValueError('low is greater than high')
+    return max(low, min(value, high))

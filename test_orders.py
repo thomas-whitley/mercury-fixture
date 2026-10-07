@@ -20,3 +20,18 @@ class Orders(unittest.TestCase):
 
     def test_summary_ends_with_the_total(self):
         self.assertEqual(summary(parse_orders(CSV)).splitlines()[-1], "TOTAL 22.50")
+
+    def test_order_total_rounds_each_line(self):
+        # Build an order where per‑line rounding matters.
+        csv = "sku,quantity,unit_price\nA,2,1.23\nB,1,2.34\n"
+        lines = parse_orders(csv)
+        # Expected:
+        # A: 2 * 1.23 = 2.46; *1.10 = 2.706 → 2.71
+        # B: 1 * 2.34 = 2.34; *1.10 = 2.574 → 2.57
+        # Total = 5.28
+        expected = Decimal('5.28')
+        self.assertEqual(order_total(lines), expected)
+
+
+if __name__ == '__main__':
+    unittest.main()

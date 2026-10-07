@@ -1,4 +1,4 @@
-"""Prices lines. Ten or more of one SKU takes 5 percent off. GST is 10 percent."""
+'''Prices lines. Ten or more of one SKU takes 5 percent off. GST is 10 percent.'''
 
 from decimal import ROUND_HALF_UP, Decimal
 
@@ -19,6 +19,10 @@ def line_total(line: Line) -> Decimal:
 
 
 def order_total(lines: list[Line]) -> Decimal:
-    """The order's total including GST, rounded to the cent once, on the whole order."""
-    before_gst = sum((line_total(line) for line in lines), Decimal(0))
-    return (before_gst * (1 + GST)).quantize(CENT, rounding=ROUND_HALF_UP)
+    """The order's total including GST, rounding each line's total to the cent (half‑up) and summing those rounded amounts."""
+    total = Decimal(0)
+    for line in lines:
+        # Compute the line total including GST and round it to a cent
+        line_with_gst = (line_total(line) * (1 + GST)).quantize(CENT, rounding=ROUND_HALF_UP)
+        total += line_with_gst
+    return total

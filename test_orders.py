@@ -15,6 +15,11 @@ class Orders(unittest.TestCase):
             parse_orders("sku,quantity,unit_price\nA,1,x\nB,1,1\nC,1,y\n")
         self.assertEqual(caught.exception.line_numbers, [2, 4])
 
+    def test_reports_bad_quantities_and_prices_in_line_order(self):
+        with self.assertRaises(InvalidOrders) as caught:
+            parse_orders("sku,quantity,unit_price\nA,0,10.00\nB,1,x\nC,-1,5.00\n")
+        self.assertEqual(caught.exception.line_numbers, [2, 3, 4])
+
     def test_order_total_includes_gst(self):
         self.assertEqual(order_total(parse_orders(CSV)), Decimal("24.75"))
 

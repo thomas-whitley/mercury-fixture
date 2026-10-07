@@ -4,6 +4,7 @@ from decimal import Decimal
 from orders import InvalidOrders, order_total, parse_orders, summary
 
 CSV = "sku,quantity,unit_price\nA,2,10.00\nB,1,2.50\n"
+BULK_CSV = "sku,quantity,unit_price\nA,10,10.00\n"
 
 
 class Orders(unittest.TestCase):
@@ -20,3 +21,9 @@ class Orders(unittest.TestCase):
 
     def test_summary_ends_with_the_total(self):
         self.assertEqual(summary(parse_orders(CSV)).splitlines()[-1], "TOTAL 22.50")
+
+    def test_summary_applies_bulk_discount(self):
+        result = summary(parse_orders(BULK_CSV))
+        lines = result.splitlines()
+        self.assertEqual(lines[0], "A x10 95.00")
+        self.assertEqual(lines[1], "TOTAL 95.00")

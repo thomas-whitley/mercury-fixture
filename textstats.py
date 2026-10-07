@@ -2,4 +2,6 @@
 
 
 def word_count(text: str) -> int:
-    return len(text.split(" "))
+    if not text.strip():
+        return 0
+    return len(text.split())

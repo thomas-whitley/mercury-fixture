@@ -1,0 +1,25 @@
+import re
+
+
+def parse_duration(text: str) -> int:
+    if not text:
+        raise ValueError("Empty string")
+
+    # Pattern to match optional hours, minutes, seconds in strict order without spaces
+    pattern = r"^(?:(\d+)h)?(?:(\d+)m)?(?:(\d+)s)?$"
+    match = re.match(pattern, text)
+
+    if not match or text == "":
+        raise ValueError(f"Invalid duration format: {text}")
+
+    h_str, m_str, s_str = match.groups()
+
+    # If all groups are None, it means the string didn't match any valid component (e.g. "")
+    if h_str is None and m_str is None and s_str is None:
+        raise ValueError(f"Invalid duration format: {text}")
+
+    hours = int(h_str) if h_str is not None else 0
+    minutes = int(m_str) if m_str is not None else 0
+    seconds = int(s_str) if s_str is not None else 0
+
+    return hours * 3600 + minutes * 60 + seconds

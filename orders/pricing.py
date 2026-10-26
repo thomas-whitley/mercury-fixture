@@ -19,6 +19,11 @@ def line_total(line: Line) -> Decimal:
 
 
 def order_total(lines: list[Line]) -> Decimal:
-    """The order's total including GST, rounded to the cent once, on the whole order."""
-    before_gst = sum((line_total(line) for line in lines), Decimal(0))
-    return (before_gst * (1 + GST)).quantize(CENT, rounding=ROUND_HALF_UP)
+    """The order's total including GST, rounded per line to the cent, half up."""
+    total = Decimal(0)
+    for line in lines:
+        line_before_gst = line_total(line)
+        line_with_gst = line_before_gst * (1 + GST)
+        rounded_line = line_with_gst.quantize(CENT, rounding=ROUND_HALF_UP)
+        total += rounded_line
+    return total

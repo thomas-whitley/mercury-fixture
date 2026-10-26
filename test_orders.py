@@ -18,5 +18,13 @@ class Orders(unittest.TestCase):
     def test_order_total_includes_gst(self):
         self.assertEqual(order_total(parse_orders(CSV)), Decimal("24.75"))
 
+    def test_order_total_rounds_per_line(self):
+        # Three lines each 0.015 before GST -> each with GST 0.0165 rounds to 0.02
+        csv = "sku,quantity,unit_price\nX,1,0.015\nY,1,0.015\nZ,1,0.015\n"
+        lines = parse_orders(csv)
+        # Per-line rounding: 0.02 * 3 = 0.06
+        self.assertEqual(order_total(lines), Decimal("0.06"))
+        # Old method would give 0.05 (0.045 * 1.10 = 0.0495 -> 0.05)
+
     def test_summary_ends_with_the_total(self):
         self.assertEqual(summary(parse_orders(CSV)).splitlines()[-1], "TOTAL 22.50")

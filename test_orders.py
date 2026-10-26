@@ -20,3 +20,12 @@ class Orders(unittest.TestCase):
 
     def test_summary_ends_with_the_total(self):
         self.assertEqual(summary(parse_orders(CSV)).splitlines()[-1], "TOTAL 22.50")
+
+    def test_summary_uses_bulk_discount(self):
+        csv_bulk = "sku,quantity,unit_price\nC,10,10.00\n"
+        lines = parse_orders(csv_bulk)
+        summary_output = summary(lines).splitlines()
+        # First line should reflect 5% bulk discount on 10 * 10.00 = 100.00 -> 95.00
+        self.assertEqual(summary_output[0], "C x10 95.00")
+        # Total line should match the discounted amount
+        self.assertEqual(summary_output[-1], "TOTAL 95.00")
